@@ -1,62 +1,48 @@
-#
-# iniparser Makefile
-#
+# Copyright 2019 MXNavi, All Rights Reserved
+### Standard Makefile template
+### Copyright (C) Matthew Peddie <peddie@alum.mit.edu>
+###
+### This file is hereby placed in the public domain, or, if your legal
+### system doesn't recognize this concept, you may consider it
+### licensed under the WTFPL version 2.0 or any BSD license you
+### choose.
+###
+### This file should be all you need to configure a basic project;
+### obviously for more complex projects, you'll need to edit the other
+### files as well.  It supports only one project at a time.  Type
+### ``make help'' for usage help.
 
-# Compiler settings
-CC      = gcc
-CFLAGS  = -O2 -fPIC -Wall -ansi -pedantic
+# What's the executable called?
+PROJ = libiniparser
 
-# Ar settings to build the library
-AR	    = ar
-ARFLAGS = rcv
+LOCAL_PATH:= $(shell pwd)
 
-SHLD = ${CC} ${CFLAGS}
-LDSHFLAGS = -shared -Wl,-Bsymbolic  -Wl,-rpath -Wl,/usr/lib -Wl,-rpath,/usr/lib
-LDFLAGS = -Wl,-rpath -Wl,/usr/lib -Wl,-rpath,/usr/lib
+MODULE_VERSION := $(shell git describe --tags --dirty)
+ifeq ($(MODULE_VERSION),)
+    MODULE_VERSION:= dev-$(shell git rev-parse --short HEAD)
+endif
 
-# Set RANLIB to ranlib on systems that require it (Sun OS < 4, Mac OSX)
-# RANLIB  = ranlib
-RANLIB = true
+####################################################
+libiniparser_SRC_FILES := \
+    src/dictionary.c \
+    src/iniparser.c \
 
-RM      = rm -f
-
-
-# Implicit rules
-
-SUFFIXES = .o .c .h .a .so .sl
-
-COMPILE.c=$(CC) $(CFLAGS) -c
-.c.o:
-	@(echo "compiling $< ...")
-	@($(COMPILE.c) -o $@ $<)
-
-
-SRCS = src/iniparser.c \
-	   src/dictionary.c
-
-OBJS = $(SRCS:.c=.o)
+LOCAL_SRC_FILES := \
+    $(libiniparser_SRC_FILES) \
 
 
-default:	libiniparser.a libiniparser.so
+LOCAL_C_INCLUDES:= \
+    $(LOCAL_PATH) \
+    $(LOCAL_PATH)/include \
 
-libiniparser.a:	$(OBJS)
-	@($(AR) $(ARFLAGS) libiniparser.a $(OBJS))
-	@($(RANLIB) libiniparser.a)
+LOCAL_CFLAGS += -DMODULE_VERSION=\"$(MODULE_VERSION)\"
+LOCAL_CFLAGS += -DLOG_TAG=\"libiniparser\"
+LOCAL_CFLAGS += -fvisibility=hidden
 
-libiniparser.so:	$(OBJS)
-	@$(SHLD) $(LDSHFLAGS) -o $@.0 $(OBJS) $(LDFLAGS) \
-		-Wl,-soname=`basename $@`.0
+#LOCAL_LIBNAMES += libcutils
 
-clean:
-	$(RM) $(OBJS)
+#LOCAL_LIBDIRS += $(ROOT_DIR)/foundation/libcutils
 
-veryclean:
-	$(RM) $(OBJS) libiniparser.a libiniparser.so*
-	rm -rf ./html ; mkdir html
-	cd test ; $(MAKE) veryclean
+#######################################################
 
-docs:
-	@(cd doc ; $(MAKE))
-	
-check:
-	@(cd test ; $(MAKE))
+include $(ROOT_DIR)/build/makefile-$(TARGET_PLATFORM)-$(TARGET_ARCH).mk
