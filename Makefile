@@ -37,7 +37,7 @@ LOCAL_C_INCLUDES:= \
 
 LOCAL_CFLAGS += -DMODULE_VERSION=\"$(MODULE_VERSION)\"
 LOCAL_CFLAGS += -DLOG_TAG=\"libiniparser\"
-LOCAL_CFLAGS += -fvisibility=hidden
+#LOCAL_CFLAGS += -fvisibility=hidden
 
 #LOCAL_LIBNAMES += libcutils
 
