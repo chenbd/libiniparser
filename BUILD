@@ -1,26 +1,25 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
-load("//cyber/ehp:build/build.bzl", "COPTS")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//:build/build.bzl", "COPTS")
 
 package(default_visibility = ["//visibility:public"])
 
 local_src = [
     "src/dictionary.c",
     "src/iniparser.c",
+    "include/iniparser/dictionary.h",
+    "include/iniparser/iniparser.h",
 ]
 
-local_include = [
-    "-isystem cyber/ehp/external/",
-    "-isystem cyber/ehp/external/libiniparser/include/",
+local_copts = [
+    "-isystem third_party/",
+    "-isystem third_party/libiniparser/include/",
 ]
 
 cc_library(
     name = "iniparser",
-    linkstatic = True,
     srcs = local_src,
-    visibility = ["//visibility:public"],
+    linkstatic = True,
     alwayslink = True,
-    copts = COPTS + local_include,
-    deps = [
-        "//cyber",
-    ],
+    visibility = ["//visibility:public"],
+    copts = COPTS + local_copts,
 )
