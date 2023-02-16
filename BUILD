@@ -1,18 +1,16 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//:build/build.bzl", "COPTS")
+load("//modules/map/hdmap_static:build/build.bzl", "COPTS")
 
 package(default_visibility = ["//visibility:public"])
 
 local_src = [
     "src/dictionary.c",
     "src/iniparser.c",
-    "include/iniparser/dictionary.h",
-    "include/iniparser/iniparser.h",
 ]
 
 local_copts = [
-    "-isystem third_party/",
-    "-isystem third_party/libiniparser/include/",
+    "-isystem modules/map/hdmap_static/external/",
+    "-isystem modules/map/hdmap_static/external/libiniparser/include/",
 ]
 
 cc_library(
@@ -22,4 +20,7 @@ cc_library(
     alwayslink = True,
     visibility = ["//visibility:public"],
     copts = COPTS + local_copts,
+    deps = [
+        "//modules/map/hdmap_static",
+    ]
 )
