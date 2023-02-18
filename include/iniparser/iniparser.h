@@ -295,6 +295,9 @@ int iniparser_find_entry(dictionary * ini, const char * entry) ;
  */
 /*--------------------------------------------------------------------------*/
 dictionary * iniparser_load(const char * ininame);
+#ifdef __linux__
+dictionary *iniparser_load_mem(void *buf, size_t size);
+#endif
 
 /*-------------------------------------------------------------------------*/
 /**
