@@ -738,7 +738,8 @@ dictionary *iniparser_load(const char *ininame) {
   return __iniparser_load(in);
 }
 
-#ifdef __linux__
+#if (defined(__linux__) && !defined(__ANDROID__)) ||                           \
+    (defined(__ANDROID__) && __ANDROID_API__ >= 23)
 dictionary *iniparser_load_mem(void *buf, size_t size) {
   FILE *in;
   if ((in = fmemopen(buf, size, "r")) == NULL) {
