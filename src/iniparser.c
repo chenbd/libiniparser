@@ -8,6 +8,7 @@
 /*--------------------------------------------------------------------------*/
 /*---------------------------- Includes ------------------------------------*/
 #include <ctype.h>
+#include <errno.h>
 #include <iniparser/iniparser.h>
 
 /*---------------------------- Defines -------------------------------------*/
@@ -732,7 +733,8 @@ static dictionary * __iniparser_load( FILE * in)
 dictionary *iniparser_load(const char *ininame) {
   FILE *in;
   if ((in = fopen(ininame, "r")) == NULL) {
-    fprintf(stderr, "iniparser: cannot open %s\n", ininame);
+    if (errno != ENOENT)
+      fprintf(stderr, "iniparser: cannot open %s\n", ininame);
     return NULL;
   }
   return __iniparser_load(in);
