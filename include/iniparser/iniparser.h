@@ -298,6 +298,8 @@ dictionary * iniparser_load(const char * ininame);
 #if (defined(__linux__) && !defined(__ANDROID__)) ||                           \
     (defined(__ANDROID__) && __ANDROID_API__ >= 23)
 dictionary *iniparser_load_mem(void *buf, size_t size);
+#else
+static dictionary *iniparser_load_mem(void *buf, size_t size) { return NULL; };
 #endif
 
 /*-------------------------------------------------------------------------*/
